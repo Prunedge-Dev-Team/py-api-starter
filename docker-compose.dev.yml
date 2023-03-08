@@ -16,9 +16,9 @@ services:
     restart: always
 
   redis:
-    image: redis
+    image: bitnami/redis
     ports:
-      - "6379"
+      - "16739:6739"
     env_file:
       - ./.env
 
