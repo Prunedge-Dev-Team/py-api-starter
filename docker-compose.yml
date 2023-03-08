@@ -15,6 +15,13 @@ services:
       - ./.env
     restart: unless-stopped
 
+  redis:
+    image: bitnami/redis
+    ports:
+      - "16739:6739"
+    env_file:
+      - ./.env
+
   celery:
     <<: *api
     command: celery -A core worker --loglevel=info --logfile=logs/celery.log
@@ -24,6 +31,7 @@ services:
     env_file:
       - ./.env
     depends_on:
+      - redis
       - api
 
   celery-beat:
