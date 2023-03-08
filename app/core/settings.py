@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'storages',
+    'rest_framework',
     'django_filters',
     'import_export',
     'debug_toolbar',
@@ -82,7 +83,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 ASGI_APPLICATION = 'core.asgi.application'
 CORS_ALLOW_ALL_ORIGINS = True
-# CSRF_TRUSTED_ORIGINS = ['https://*.prowoks.co']
+# CSRF_TRUSTED_ORIGINS = ['https://*.prunedge.org']
 LOGIN_URL = 'rest_framework:login'
 LOGOUT_URL = 'rest_framework:logout'
 
@@ -316,8 +317,3 @@ if DEBUG == 0:
         # django.contrib.auth) you may enable sending PII data.
         send_default_pii=True
     )
-
-
-# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
-
-# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
