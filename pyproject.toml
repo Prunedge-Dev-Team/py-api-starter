@@ -5,7 +5,7 @@ description = "MPI Capture API"
 authors = ["Daniel Ale <danielale9291@gmail.com>"]
 license = "ICS"
 readme = "README.md"
-packages = [{include = "mpi_capture_api"}]
+#packages = [{include = "mpi_capture_api"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
