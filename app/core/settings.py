@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'core.celery.CeleryConfig',
     'user',
+    'capture',
 ]
 
 AUTH_USER_MODEL = "user.User"
