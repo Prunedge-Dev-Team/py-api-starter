@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "mpi-capture-api"
+name = "django-api"
 version = "0.1.0"
-description = "MPI Capture API"
+description = "Django API API"
 authors = ["Daniel Ale <danielale9291@gmail.com>"]
 license = "ICS"
 readme = "README.md"
-#packages = [{include = "mpi_capture_api"}]
+#packages = [{include = "django_api"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"

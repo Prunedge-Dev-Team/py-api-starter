@@ -1,0 +1,108 @@
+version: "3.9"
+name: "django"
+
+services:
+  db:
+    image: postgres:16-alpine
+    platform: linux/amd64
+    container_name: django-db
+    ports:
+      - '12432:5432'
+    environment:
+      POSTGRES_USER: django
+      POSTGRES_DB: django
+      POSTGRES_PASSWORD: django
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  api: &api
+    build:
+      context: .
+      dockerfile: docker/interim/Dockerfile
+    image: prunedge/accounting-api
+    # command: daphne -b 0.0.0.0 -p 12007 core.asgi:application
+    command: python3 manage.py runserver 0.0.0.0:12007
+    volumes:
+      - ./app:/app
+    ports:
+      - "12007:12007"
+    env_file:
+      - ./.env
+    restart: always
+    depends_on:
+      - db
+      - redis
+    networks:
+      - default
+      - elk
+
+
+  redis:
+    image: redis:7-alpine
+    platform: linux/amd64
+    ports:
+      - "12379:6379"
+    volumes:
+      - redis-data:/data
+    env_file:
+      - ./.env
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    platform: linux/amd64
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+      - HTTP_USER=root
+      - HTTP_PASSWORD=qwerty
+      - REDIS_DB=0
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+
+  celery:
+    <<: *api
+    command: celery -A core worker --concurrency=4  --loglevel=info --logfile=logs/celery.log
+    ports: []
+    volumes:
+      - ./app:/app
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+      - api
+
+  celery-beat:
+    <<: *api
+    command: celery -A core beat -l info
+    ports: []
+    volumes:
+      - ./app:/app
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+      - celery
+
+  dashboard:
+    <<: *api
+    command: celery --broker=${REDIS_URL} flower --port=5555
+    ports:
+      - "12555:5555"
+    env_file:
+      - ./.env
+    depends_on:
+      - api
+      - redis
+      - celery
+
+
+
+volumes:
+  db-data:
+  redis-data:
